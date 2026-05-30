@@ -452,7 +452,7 @@ function tToSlot(t,N){if(t===1||t===N)return 0;if(t<=N/2)return t-1;return t;}
 var cfg=null, sim=[], tourIdx=0, results={};
 var mouv='', sens='NS', relaisLigne='EO';
 var SUITS=[['T','♣','var(--suit-c)'],['K','♦','var(--suit-d)'],['C','♥','var(--suit-h)'],['P','♠','var(--suit-s)'],['SA','SA','var(--text)']];
-var RES_VALS=['-7','-6','-5','-4','-3','-2','-1','=','+1','+2','+3','+4','+5','+6'];
+var RES_VALS=['+6','+5','+4','+3','+2','+1','=','-1','-2','-3','-4','-5','-6','-7'];
 var SUIT_LABEL={T:'<span style="color:var(--suit-c)">♣</span>',K:'<span style="color:var(--suit-d)">♦</span>',C:'<span style="color:var(--suit-h)">♥</span>',P:'<span style="color:var(--suit-s)">♠</span>',SA:'SA'};
 var ITEM_H=40;
 
@@ -626,8 +626,8 @@ function renderTour(){
     donnes.forEach(function(d){
       var r=results[d]||{res:'='};
       initPicker(d,'lv',['7','6','5','4','3','2','1','-'],r.lv?String(r.lv):'-');
-      initPicker(d,'col',['T','K','C','P','SA'],r.col||'P');
-      initPicker(d,'res',RES_VALS,r.res||'=');
+      initPicker(d,'col',['SA','P','C','K','T'],r.col||'T');
+      initPicker(d,'res',['+6', '+5', '+4', '+3', '+2', '+1', '=', '-1', '-2', '-3', '-4', '-5', '-6', '-7', '-8', '-9', '-10', '-11', '-12', '-13'],r.res||'=');
     });
   }
 }
