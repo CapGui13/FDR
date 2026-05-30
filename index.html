@@ -586,23 +586,10 @@ function addDrumEvents(el) {
   function end() {
     if(!dragging) return;
     dragging=false;
-    var v=vel, fi=el._idx;
-    function animate(){
-      v *= 0.88;
-      fi += v * 16/ITEM_H;
-      var ci = Math.max(0, Math.min(el._items.length-1, fi));
-      el.querySelector('.drum-inner').style.transition='none';
-      el.querySelector('.drum-inner').style.transform = 'translateY(' + (75 - ci*ITEM_H) + 'px)';
-      var si = Math.round(ci);
-      if(si !== el._idx){
-        el._idx=si;
-        el.querySelector('.drum-inner').querySelectorAll('.drum-item[data-val]').forEach(function(item,i){item.classList.toggle('active',i===si);});
-        if(el._onChange) el._onChange(el._vals[si]);
-      }
-      if(Math.abs(v)>0.015 && ci>0 && ci<el._items.length-1) raf=requestAnimationFrame(animate);
-      else setDrumIdx(el, Math.round(ci), true);
-    }
-    raf=requestAnimationFrame(animate);
+    // Project forward based on velocity, then snap
+    var projected = el._idx + vel * 80 / ITEM_H;
+    var target = Math.max(0, Math.min(el._items.length-1, Math.round(projected)));
+    setDrumIdx(el, target, true);
   }
   el.addEventListener('touchstart',start,{passive:false});
   el.addEventListener('touchmove',move,{passive:false});
