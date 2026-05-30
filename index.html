@@ -560,12 +560,10 @@ function setDrumIdx(el, idx, animate) {
 }
 
 function addDrumEvents(el) {
-  var startY=0, startIdx=0, lastY=0, lastT=0, vel=0, dragging=false, raf=null;
+  var startY=0, startIdx=0, lastY=0, lastT=0, vel=0, dragging=false;
   function getY(e){ return e.touches ? e.touches[0].clientY : e.clientY; }
   function start(e) {
-    if(raf){cancelAnimationFrame(raf);raf=null;}
     dragging=true; startY=getY(e); lastY=startY; lastT=Date.now(); startIdx=el._idx; vel=0;
-    el.querySelector('.drum-inner').style.transition='none';
     e.preventDefault();
   }
   function move(e) {
@@ -573,22 +571,18 @@ function addDrumEvents(el) {
     var y=getY(e), now=Date.now(), dt=Math.max(1,now-lastT);
     vel = (lastY-y)/dt;
     lastY=y; lastT=now;
-    var fi = startIdx + (startY-y)/ITEM_H;
-    fi = Math.max(-0.4, Math.min(el._items.length-0.6, fi));
-    el.querySelector('.drum-inner').style.transform = 'translateY(' + (75 - fi*ITEM_H) + 'px)';
-    var si = Math.round(fi);
-    if(si !== el._idx) {
-      el._idx = si;
-      el.querySelector('.drum-inner').querySelectorAll('.drum-item[data-val]').forEach(function(item,i){item.classList.toggle('active',i===si);});
-    }
+    // Snap to nearest item as we drag — never sit between two
+    var moved = Math.round((startY-y)/ITEM_H);
+    var target = Math.max(0, Math.min(el._items.length-1, startIdx+moved));
+    if(target !== el._idx) setDrumIdx(el, target, false);
     e.preventDefault();
   }
   function end() {
     if(!dragging) return;
     dragging=false;
-    // Project forward based on velocity, then snap
-    var projected = el._idx + vel * 80 / ITEM_H;
-    var target = Math.max(0, Math.min(el._items.length-1, Math.round(projected)));
+    // Flick: project velocity to next item(s)
+    var flick = Math.round(vel * 120 / ITEM_H);
+    var target = Math.max(0, Math.min(el._items.length-1, el._idx + flick));
     setDrumIdx(el, target, true);
   }
   el.addEventListener('touchstart',start,{passive:false});
@@ -600,7 +594,6 @@ function addDrumEvents(el) {
   el.addEventListener('mouseleave',function(){if(dragging)end();});
   el.addEventListener('wheel',function(e){
     e.preventDefault();
-    if(raf){cancelAnimationFrame(raf);raf=null;}
     setDrumIdx(el,el._idx+(e.deltaY>0?1:-1),true);
   },{passive:false});
 }
