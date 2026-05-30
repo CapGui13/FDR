@@ -625,7 +625,7 @@ function renderTour(){
   if(isMobile){
     donnes.forEach(function(d){
       var r=results[d]||{res:'='};
-      initPicker(d,'lv',['-','1','2','3','4','5','6','7'],r.lv?String(r.lv):'-',true);
+      initPicker(d,'lv',['7','6','5','4','3','2','1','-'],r.lv?String(r.lv):'-');
       initPicker(d,'col',['T','K','C','P','SA'],r.col||'P');
       initPicker(d,'res',RES_VALS,r.res||'=');
     });
@@ -763,10 +763,10 @@ function buildRecap(){
 }
 
 // ── Pickers ────────────────────────────────────────────────────
-function initPicker(d,type,items,initVal,invertScroll){
+function initPicker(d,type,items,initVal){
   var el=document.getElementById('pk-'+type+'-'+d);
   if(!el)return;
-  el._d=d;el._type=type;el._items=items;el._invert=!!invertScroll;
+  el._d=d;el._type=type;el._items=items;
   var idx=items.indexOf(String(initVal));if(idx<0)idx=0;
   el._idx=idx;
   var inner=document.createElement('div');inner.className='picker-inner';
@@ -822,7 +822,7 @@ function addPickerEvents(el){
     if(!dragging)return;
     var y=getY(e),now=Date.now(),dt=now-lastT||1;
     velY=(y-lastY)/dt;lastY=y;lastT=now;
-    var dir=el._invert?-1:1;var fi=Math.max(0,Math.min(el._items.length-1,startIdx+dir*(startY-y)/ITEM_H));
+    var fi=Math.max(0,Math.min(el._items.length-1,startIdx+(startY-y)/ITEM_H));
     el.querySelector('.picker-inner').style.transform='translateY('+((-fi)*ITEM_H)+'px)';
     var si=Math.round(fi);
     if(si!==el._idx){el._idx=si;updatePickerSel(el);onPickerChange(el._d,el._type,el._items[si]);}
@@ -830,7 +830,7 @@ function addPickerEvents(el){
   }
   function onEnd(){
     if(!dragging)return;dragging=false;
-    var vel=(el._invert?1:-1)*velY;var fi=el._idx;
+    var vel=-velY;var fi=el._idx;
     function anim(){
       vel*=0.92;fi+=vel*16/ITEM_H;
       var ci=Math.max(0,Math.min(el._items.length-1,fi));
