@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#111111"/>
+<title>Feuille de route</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#111;--bg2:#1a1a1a;--bg3:#222;--text:#f5f5f5;--text2:#999;--border:#333;--blue:#60a5fa;--green:#4ade80;}
+@media(prefers-color-scheme:light){:root{--bg:#f8f8f7;--bg2:#fff;--bg3:#efefed;--text:#111;--text2:#666;--border:#ddd;--blue:#1d4ed8;--green:#166534;}}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;padding-bottom:env(safe-area-inset-bottom,20px);touch-action:manipulation;-webkit-user-select:none;user-select:none;}
+.wrap{max-width:480px;margin:0 auto;padding:1.5rem 1rem;}
+.screen{display:none;}.screen.active{display:block;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.section-title{font-size:15px;font-weight:600;margin-bottom:.3rem;}
+.section-sub{font-size:12px;color:var(--text2);margin-bottom:.8rem;}
+.back-btn{display:inline-flex;align-items:center;gap:4px;border:none;background:none;color:var(--text2);font-size:13px;cursor:pointer;font-family:inherit;margin-bottom:1.1rem;padding:0;}
+.field{margin-bottom:1.1rem;}
+.field label{display:block;font-size:13px;color:var(--text2);margin-bottom:5px;font-weight:500;}
+input[type=number]{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);font-size:16px;font-family:inherit;-webkit-appearance:none;outline:none;}
+input[type=number]:focus{border-color:var(--blue);}
+.seg{display:flex;gap:8px;}
+.seg-btn{flex:1;padding:11px 8px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--text2);font-family:inherit;}
+.btn-go{width:100%;margin-top:1.2rem;padding:14px;border:none;border-radius:12px;background:var(--text);color:var(--bg);font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;}
+.btn-go:active{opacity:.8;}
+.err{font-size:12px;color:#f87171;margin-top:4px;display:none;}
+.options-list{display:flex;flex-direction:column;gap:8px;}
+.option-btn{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);font-size:14px;font-family:inherit;cursor:pointer;text-align:left;transition:all 0.15s;display:flex;justify-content:space-between;align-items:center;min-height:64px;}
+.option-btn:active{transform:scale(0.98);opacity:0.8;}
+.option-main{font-weight:600;font-size:14px;}
+.option-detail{font-size:12px;color:var(--text2);margin-top:2px;}
+.option-badge{font-size:11px;padding:3px 8px;border-radius:999px;font-weight:600;flex-shrink:0;margin-left:8px;}
+.badge-simple{background:#dbeafe;color:#1e3a8a;}
+.badge-saut-opt{background:#fef3c7;color:#92400e;}
+.badge-guerid-opt{background:#d1fae5;color:#065f46;}
+.badge-howell{background:#f3e8ff;color:#6b21a8;}
+.section-sep{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;padding:4px 2px 2px;}
+.no-options{font-size:13px;color:var(--text2);padding:12px;background:var(--bg3);border-radius:10px;text-align:center;}
+.donne-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.donne-hdr{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border);}
+.donne-num{width:32px;height:32px;border-radius:8px;background:#1d4ed8;color:#bfdbfe;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.donne-score{margin-left:auto;font-size:13px;font-weight:700;color:var(--green);}
+.donne-score.neg{color:#f87171;}
+.donne-body{padding:10px 12px;display:flex;flex-direction:column;gap:8px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.inp-lbl{font-size:11px;color:var(--text2);margin-bottom:3px;}
+.btns4{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.btns4 button{padding:7px 0;border-radius:7px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+.btns4 button.active{background:rgba(96,165,250,.15);border-color:var(--blue);color:var(--blue);}
+.tour-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.tour-badge{font-size:24px;font-weight:800;}
+.tour-badge span{font-size:14px;font-weight:400;color:var(--text2);}
+.tour-nav button{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);font-size:20px;cursor:pointer;margin-left:6px;}
+.tour-nav button:disabled{opacity:.3;cursor:not-allowed;}
+.tour-info{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.75rem;}
+.tour-info span{font-size:12px;color:var(--text2);background:var(--bg3);padding:3px 9px;border-radius:999px;}
+.relais-card{background:rgba(167,139,250,.1);border:1.5px solid rgba(167,139,250,.3);border-radius:12px;padding:12px 14px;color:#a78bfa;font-weight:600;font-size:13px;margin-bottom:8px;}
+.recap-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.recap-row:last-child{border-bottom:none;}
+.recap-num{width:28px;height:28px;border-radius:7px;background:#1d4ed8;color:#bfdbfe;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.recap-contract{font-size:13px;font-weight:500;flex:1;}
+.recap-score{font-size:13px;font-weight:700;}
+.recap-score.pos{color:var(--green);}
+.recap-score.neg{color:#f87171;}
+.total-box{background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;margin-top:1rem;}
+/* Picker */
+.picker-row{display:flex;gap:6px;}
+.picker{flex:1;height:120px;overflow:hidden;position:relative;border-radius:10px;background:var(--bg3);border:1.5px solid var(--border);cursor:ns-resize;touch-action:none;}
+.picker::before,.picker::after{content:'';position:absolute;left:0;right:0;height:36px;z-index:2;pointer-events:none;}
+.picker::before{top:0;background:linear-gradient(to bottom,var(--bg3),transparent);}
+.picker::after{bottom:0;background:linear-gradient(to top,var(--bg3),transparent);}
+.picker-sel{position:absolute;top:50%;left:4px;right:4px;height:40px;transform:translateY(-50%);border-top:1.5px solid var(--blue);border-bottom:1.5px solid var(--blue);z-index:1;pointer-events:none;border-radius:6px;}
+.picker-inner{position:absolute;width:100%;}
+.picker-item{height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--text2);user-select:none;-webkit-user-select:none;}
+.picker-item.sel{color:var(--text);font-size:17px;}
+/* Desktop result grid */
+.res-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.res-btn{padding:6px 0;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+.res-btn.active{background:rgba(96,165,250,.15);border-color:var(--blue);color:var(--blue);}
+/* Desktop suit buttons */
+.suit-row{display:flex;gap:3px;margin-top:4px;}
+.suit-btn{flex:1;padding:8px 0;border-radius:8px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+.suit-btn.active{background:rgba(96,165,250,.15);border-color:var(--blue);color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="screen active" id="s-paires">
+  <p class="section-title">🃏 Feuille de route</p>
+  <p class="section-sub">Nombre de paires</p>
+  <div class="field">
+    <input type="number" id="f-paires" min="6" max="36" step="1" inputmode="numeric"
+      placeholder="ex: 12" onfocus="this.select()" oninput="onPairesInput()"/>
+    <p class="err" id="e-paires">Entre 6 et 36 paires</p>
+  </div>
+  <div class="options-list" id="mouv-list"></div>
+</div>
+
+<div class="screen" id="s-position">
+  <button class="back-btn" onclick="goScreen('s-paires')">← Retour</button>
+  <p class="section-title" id="pos-title"></p>
+  <p class="section-sub" id="pos-sub"></p>
+  <div id="pos-mitchell">
+    <div class="field">
+      <label>Votre table</label>
+      <input type="number" id="f-table" min="1" step="1" inputmode="numeric" onfocus="this.select()"/>
+      <p class="err" id="e-table">Numéro invalide</p>
+    </div>
+    <div class="field">
+      <label>Votre sens</label>
+      <div class="seg">
+        <button class="seg-btn" id="btn-ns" onclick="setSens('NS')">Nord / Sud</button>
+        <button class="seg-btn" id="btn-eo" onclick="setSens('EO')">Est / Ouest</button>
+      </div>
+    </div>
+    <div class="field" id="field-relais" style="display:none;">
+      <label>Ligne du relais</label>
+      <div class="seg">
+        <button class="seg-btn" id="btn-rns" onclick="setRL('NS')">Nord / Sud</button>
+        <button class="seg-btn" id="btn-reo" onclick="setRL('EO')">Est / Ouest</button>
+      </div>
+    </div>
+  </div>
+  <div id="pos-howell" style="display:none;">
+    <div class="field">
+      <label>Votre numéro de paire</label>
+      <input type="number" id="f-paire" min="1" step="1" inputmode="numeric" onfocus="this.select()"/>
+      <p class="err" id="e-paire">Numéro invalide</p>
+    </div>
+  </div>
+  <button class="btn-go" onclick="startFeuille()">Commencer →</button>
+</div>
+
+<div class="screen" id="s-jeu">
+  <div class="tour-hdr">
+    <div class="tour-badge">Tour <span id="t-num">1</span><span> / <span id="t-total">?</span></span></div>
+    <div class="tour-nav">
+      <button id="btn-prev" onclick="navTour(-1)" disabled>‹</button>
+      <button id="btn-next" onclick="navTour(1)">›</button>
+    </div>
+  </div>
+  <div class="tour-info" id="t-info"></div>
+  <div id="t-donnes"></div>
+  <button class="btn-go" onclick="goScreen('s-recap');buildRecap();"
+    style="background:var(--bg3);color:var(--text);margin-top:.5rem;font-size:14px;">
+    Voir le récapitulatif →
+  </button>
+</div>
+
+<div class="screen" id="s-recap">
+  <button class="back-btn" onclick="goScreen('s-jeu')">← Retour</button>
+  <p class="section-title">Récapitulatif</p>
+  <p class="section-sub" id="recap-sub"></p>
+  <div id="recap-list"></div>
+  <div class="total-box">
+    <span style="font-size:14px;color:var(--text2);">Score total</span>
+    <span style="font-size:24px;font-weight:800;" id="recap-total">0</span>
+  </div>
+  <button class="btn-go" style="margin-top:1rem;background:var(--bg3);color:var(--text);font-size:13px;"
+    onclick="if(confirm('Recommencer ?')){{goScreen('s-paires');results={};}}"
+    >↩ Recommencer</button>
+</div>
+
+</div>
+<script>
+const DB=[
+  [12,6,'guerid',6,4,false,false],
+  [13,7,'simple',7,4,true,false],
+  [14,7,'simple',6,4,false,false],
+  [15,8,'saut',7,4,true,false],
+  [16,8,'saut',6,4,false,false],[16,8,'saut',7,4,false,false],[16,8,'guerid',8,3,false,false],
+  [17,9,'simple',9,3,true,false],
+  [18,9,'simple',8,3,false,false],
+  [19,10,'saut',9,3,true,false],[19,10,'guerid',10,3,true,false],
+  [20,10,'saut',8,3,false,false],[20,10,'saut',9,3,false,false],[20,10,'guerid',10,3,true,false],
+  [21,11,'simple',9,3,true,false],[21,11,'simple',10,3,true,false],
+  [22,11,'simple',8,3,false,false],[22,11,'simple',9,3,false,false],[22,11,'simple',10,3,false,false],
+  [23,12,'saut',9,3,true,false],[23,12,'saut',10,3,true,false],
+  [24,12,'saut',9,3,false,false],[24,12,'saut',10,3,false,false],[24,12,'saut',11,3,false,false],[24,12,'guerid',12,2,false,false],
+  [25,13,'simple',13,2,true,false],
+  [26,13,'simple',12,2,false,false],[26,13,'simple',13,2,false,false],
+  [27,14,'saut',13,2,true,false],[27,14,'guerid',14,2,true,false],
+  [28,14,'saut',12,2,false,false],[28,14,'saut',13,2,false,false],[28,14,'guerid',14,2,false,false],
+  [29,15,'simple',13,2,true,false],[30,15,'simple',12,2,false,false],[30,15,'simple',13,2,false,false],
+  [31,16,'saut',13,2,true,false],
+  [32,16,'saut',12,2,false,false],[32,16,'saut',13,2,false,false],
+  [33,17,'simple',13,2,true,false],[34,17,'simple',12,2,false,false],[34,17,'simple',13,2,false,false],
+  [35,18,'saut',13,2,true,false],[36,18,'saut',12,2,false,false],[36,18,'saut',13,2,false,false],
+];
+
+// DB Howell : [paires, tables, mouvement, positions_jouees, dpt, donnesCirc, deficient]
+const DB_HOWELL=[
+  [6, 3,'classique',5,5,25,false],
+  [7, 4,'heredia', 7,4,28,false],
+  [8, 4,'heredia', 6,4,32,false],
+  [8, 4,'classique',6,4,32,false],[8,4,'classique',7,4,32,false],
+  [9, 5,'heredia', 9,3,27,false],
+  [10,5,'heredia', 8,3,30,false],
+  [10,5,'classique',8,3,27,false],[10,5,'classique',9,3,27,false],
+  [11,6,'heredia', 9,3,30,false],
+  [12,6,'heredia', 8,3,30,false],
+  [12,6,'classique',8,3,33,false],[12,6,'classique',9,3,33,false],
+];
+
+const MOUV_LABEL={
+  simple:'Mitchell simple',saut:'Mitchell avec saut',guerid:'Guéridon',
+  heredia:'Howell Hérédia',classique:'Howell Classique'
+};
+const MOUV_BADGE={
+  simple:'badge-simple',saut:'badge-saut-opt',guerid:'badge-guerid-opt',
+  heredia:'badge-howell',classique:'badge-howell'
+};
+const MOUV_SHORT={
+  simple:'Simple',saut:'Saut',guerid:'Guéridon',
+  heredia:'Hérédia',classique:'Classique'
+};
+
+const OFF  ={background:'transparent',color:'var(--text2)',border:'1.5px solid var(--border)',fontWeight:'400'};
+const BLUE ={background:'#60a5fa',color:'#000',border:'1.5px solid #60a5fa',fontWeight:'700'};
+const GREEN={background:'#4ade80',color:'#000',border:'1.5px solid #4ade80',fontWeight:'700'};
+
+function applyStyle(el,s){Object.assign(el.style,s);}
+
+// ============================================================
+// HOWELL - Tableaux de mouvement complets
+// Format classique: tables = [[ns,eo,[debut,fin]], ...]  par tour
+// Format hérédia:  paires = {p: [{t,o,e:[debut,fin]} ou {relais:true}], ...}
+// ============================================================
+const HOWELL_MOVES = {
+  // --- CLASSIQUE 6 paires, 5 donnes/tour, 5 tours ---
+  'classique_6_5': {
+    type:'classique', nbPaires:6, dpt:5, nbTours:5,
+    tables:[
+      [[6,1,[1,5]],[6,2,[6,10]],[6,3,[11,15]],[6,4,[16,20]],[6,5,[21,25]]],
+      [[2,5,[1,5]],[3,1,[6,10]],[4,2,[11,15]],[5,3,[16,20]],[1,4,[21,25]]],
+      [[3,4,[1,5]],[4,5,[6,10]],[5,1,[11,15]],[1,2,[16,20]],[2,3,[21,25]]],
+    ]
+  },
+  // --- CLASSIQUE 8 paires, 4 donnes/tour, 6 ou 7 tours ---
+  'classique_8_4': {
+    type:'classique', nbPaires:8, dpt:4, nbTours:7,
+    tables:[
+      [[8,1,[1,4]],[8,2,[5,8]],[8,3,[9,12]],[8,4,[13,16]],[8,5,[17,20]],[8,6,[21,24]],[8,7,[25,28]]],
+      [[2,7,[1,4]],[3,1,[5,8]],[4,2,[9,12]],[5,3,[13,16]],[6,4,[17,20]],[7,5,[21,24]],[1,6,[25,28]]],
+      [[3,6,[1,4]],[4,7,[5,8]],[5,1,[9,12]],[6,2,[13,16]],[7,3,[17,20]],[1,4,[21,24]],[2,5,[25,28]]],
+      [[4,5,[1,4]],[5,6,[5,8]],[6,7,[9,12]],[7,1,[13,16]],[1,2,[17,20]],[2,3,[21,24]],[3,4,[25,28]]],
+    ]
+  },
+  // --- CLASSIQUE 10 paires, 3 donnes/tour, 9 tours ---
+  'classique_10_3': {
+    type:'classique', nbPaires:10, dpt:3, nbTours:9,
+    tables:[
+      [[10,1,[1,3]],[10,2,[4,6]],[10,3,[7,9]],[10,4,[10,12]],[10,5,[13,15]],[10,6,[16,18]],[10,7,[19,21]],[10,8,[22,24]],[10,9,[25,27]]],
+      [[8,9,[4,6]],[9,1,[7,9]],[1,2,[10,12]],[2,3,[13,15]],[3,4,[16,18]],[4,5,[19,21]],[5,6,[22,24]],[6,7,[25,27]],[7,8,[1,3]]],
+      [[6,4,[7,9]],[7,5,[10,12]],[8,6,[13,15]],[9,7,[16,18]],[1,8,[19,21]],[2,9,[22,24]],[3,1,[25,27]],[4,2,[1,3]],[5,3,[4,6]]],
+      [[3,7,[22,24]],[4,8,[25,27]],[5,9,[1,3]],[6,1,[4,6]],[7,2,[7,9]],[8,3,[10,12]],[9,4,[13,15]],[1,5,[16,18]],[2,6,[19,21]]],
+      [[2,5,[25,27]],[3,6,[1,3]],[4,7,[4,6]],[5,8,[7,9]],[6,9,[10,12]],[7,1,[13,15]],[8,2,[16,18]],[9,3,[19,21]],[1,4,[22,24]]],
+    ]
+  },
+  // --- CLASSIQUE 12 paires, 3 donnes/tour, 11 tours ---
+  'classique_12_3': {
+    type:'classique', nbPaires:12, dpt:3, nbTours:11,
+    tables:[
+      [[12,1,[1,3]],[12,2,[4,6]],[12,3,[7,9]],[12,4,[10,12]],[12,5,[13,15]],[12,6,[16,18]],[12,7,[19,21]],[12,8,[22,24]],[12,9,[25,27]],[12,10,[28,30]],[12,11,[31,33]]],
+      [[6,11,[7,9]],[7,1,[10,12]],[8,2,[13,15]],[9,3,[16,18]],[10,4,[19,21]],[11,5,[22,24]],[1,6,[25,27]],[2,7,[28,30]],[3,8,[31,33]],[4,9,[1,3]],[5,10,[4,6]]],
+      [[5,9,[19,21]],[6,10,[22,24]],[7,11,[25,27]],[8,1,[28,30]],[9,2,[31,33]],[10,3,[1,3]],[11,4,[4,6]],[1,5,[7,9]],[2,6,[10,12]],[3,7,[13,15]],[4,8,[16,18]]],
+      [[2,3,[22,24]],[3,4,[25,27]],[4,5,[28,30]],[5,6,[31,33]],[6,7,[1,3]],[7,8,[4,6]],[8,9,[7,9]],[9,10,[10,12]],[10,11,[13,15]],[11,1,[16,18]],[1,2,[19,21]]],
+      [[10,8,[25,27]],[11,9,[28,30]],[1,10,[31,33]],[2,11,[1,3]],[3,1,[4,6]],[4,2,[7,9]],[5,3,[10,12]],[6,4,[13,15]],[7,5,[16,18]],[8,6,[19,21]],[9,7,[22,24]]],
+      [[4,7,[31,33]],[5,8,[1,3]],[6,9,[4,6]],[7,10,[7,9]],[8,11,[10,12]],[9,1,[13,15]],[10,2,[16,18]],[11,3,[19,21]],[1,4,[22,24]],[2,5,[25,27]],[3,6,[1,3]]],
+    ]
+  },
+  // --- HÉRÉDIA 7 paires, 4 donnes/tour, 6 jouées + 1 relais ---
+  'heredia_7_4': {
+    type:'heredia', nbPaires:7, dpt:4, nbTours:7,
+    paires:{
+      1:[{e:[13,16]},{e:[17,20]},{e:[25,28]},{e:[21,24]},{e:[5,8]},{e:[9,12]},{relais:true}],
+      2:[{e:[9,12]},{e:[1,4]},{e:[17,20]},{e:[21,24]},{e:[13,16]},{relais:true},{e:[25,28]}],
+      3:[{e:[21,24]},{e:[1,4]},{e:[25,28]},{e:[17,20]},{relais:true},{e:[5,8]},{e:[13,16]}],
+      4:[{e:[21,24]},{e:[17,20]},{e:[5,8]},{relais:true},{e:[9,12]},{e:[1,4]},{e:[25,28]}],
+      5:[{e:[9,12]},{e:[21,24]},{relais:true},{e:[25,28]},{e:[5,8]},{e:[1,4]},{e:[13,16]}],
+      6:[{e:[13,16]},{relais:true},{e:[17,20]},{e:[25,28]},{e:[9,12]},{e:[5,8]},{e:[1,4]}],
+      7:[{relais:true},{e:[21,24]},{e:[5,8]},{e:[17,20]},{e:[13,16]},{e:[9,12]},{e:[1,4]}],
+    }
+  },
+  // --- HÉRÉDIA 8 paires, 4 donnes/tour, 6 tours ---
+  'heredia_8_4': {
+    type:'heredia', nbPaires:8, dpt:4, nbTours:6,
+    paires:{
+      1:[{e:[21,24]},{e:[17,20]},{e:[13,16]},{e:[9,12]},{e:[25,28]},{e:[29,32]}],
+      2:[{e:[13,16]},{e:[9,12]},{e:[29,32]},{e:[25,28]},{e:[21,24]},{e:[17,20]}],
+      3:[{e:[29,32]},{e:[1,4]},{e:[5,8]},{e:[21,24]},{e:[25,28]},{e:[17,20]}],
+      4:[{e:[25,28]},{e:[5,8]},{e:[1,4]},{e:[17,20]},{e:[21,24]},{e:[29,32]}],
+      5:[{e:[29,32]},{e:[5,8]},{e:[13,16]},{e:[25,28]},{e:[1,4]},{e:[9,12]}],
+      6:[{e:[25,28]},{e:[1,4]},{e:[29,32]},{e:[9,12]},{e:[5,8]},{e:[13,16]}],
+      7:[{e:[13,16]},{e:[17,20]},{e:[1,4]},{e:[21,24]},{e:[5,8]},{e:[9,12]}],
+      8:[{e:[21,24]},{e:[9,12]},{e:[5,8]},{e:[17,20]},{e:[1,4]},{e:[13,16]}],
+    }
+  },
+  // --- HÉRÉDIA 9 paires, 3 donnes/tour, 8 jouées + 1 relais ---
+  'heredia_9_3': {
+    type:'heredia', nbPaires:9, dpt:3, nbTours:9,
+    paires:{
+      1:[{e:[10,12]},{e:[25,27]},{e:[16,18]},{e:[13,15]},{e:[7,9]},{e:[22,24]},{e:[4,6]},{e:[19,21]},{relais:true}],
+      2:[{e:[19,21]},{e:[13,15]},{e:[16,18]},{e:[22,24]},{e:[25,27]},{e:[1,3]},{e:[7,9]},{relais:true},{e:[10,12]}],
+      3:[{e:[19,21]},{e:[25,27]},{e:[13,15]},{e:[1,3]},{e:[4,6]},{e:[10,12]},{relais:true},{e:[22,24]},{e:[16,18]}],
+      4:[{e:[4,6]},{e:[16,18]},{e:[19,21]},{e:[13,15]},{e:[25,27]},{relais:true},{e:[1,3]},{e:[22,24]},{e:[7,9]}],
+      5:[{e:[10,12]},{e:[19,21]},{e:[7,9]},{e:[22,24]},{relais:true},{e:[4,6]},{e:[1,3]},{e:[25,27]},{e:[16,18]}],
+      6:[{e:[4,6]},{e:[13,15]},{e:[7,9]},{relais:true},{e:[22,24]},{e:[10,12]},{e:[25,27]},{e:[19,21]},{e:[1,3]}],
+      7:[{e:[13,15]},{e:[16,18]},{relais:true},{e:[10,12]},{e:[4,6]},{e:[22,24]},{e:[7,9]},{e:[25,27]},{e:[1,3]}],
+      8:[{e:[13,15]},{relais:true},{e:[19,21]},{e:[1,3]},{e:[7,9]},{e:[4,6]},{e:[25,27]},{e:[16,18]},{e:[10,12]}],
+      9:[{relais:true},{e:[19,21]},{e:[13,15]},{e:[10,12]},{e:[22,24]},{e:[1,3]},{e:[4,6]},{e:[16,18]},{e:[7,9]}],
+    }
+  },
+  // --- HÉRÉDIA 10 paires, 3 donnes/tour, 8 tours ---
+  'heredia_10_3': {
+    type:'heredia', nbPaires:10, dpt:3, nbTours:8,
+    paires:{
+      1: [{e:[13,15]},{e:[4,6]},{e:[22,24]},{e:[16,18]},{e:[19,21]},{e:[7,9]},{e:[25,27]},{e:[28,30]}],
+      2: [{e:[7,9]},{e:[10,12]},{e:[13,15]},{e:[19,21]},{e:[28,30]},{e:[25,27]},{e:[1,3]},{e:[16,18]}],
+      3: [{e:[28,30]},{e:[1,3]},{e:[16,18]},{e:[19,21]},{e:[10,12]},{e:[4,6]},{e:[25,27]},{e:[22,24]}],
+      4: [{e:[4,6]},{e:[13,15]},{e:[7,9]},{e:[1,3]},{e:[22,24]},{e:[25,27]},{e:[19,21]},{e:[28,30]}],
+      5: [{e:[4,6]},{e:[1,3]},{e:[22,24]},{e:[10,12]},{e:[25,27]},{e:[28,30]},{e:[7,9]},{e:[16,18]}],
+      6: [{e:[7,9]},{e:[4,6]},{e:[1,3]},{e:[13,15]},{e:[10,12]},{e:[22,24]},{e:[19,21]},{e:[25,27]}],
+      7: [{e:[28,30]},{e:[16,18]},{e:[13,15]},{e:[10,12]},{e:[22,24]},{e:[7,9]},{e:[4,6]},{e:[25,27]}],
+      8: [{e:[10,12]},{e:[13,15]},{e:[1,3]},{e:[16,18]},{e:[28,30]},{e:[4,6]},{e:[7,9]},{e:[19,21]}],
+      9: [{e:[10,12]},{e:[16,18]},{e:[7,9]},{e:[13,15]},{e:[19,21]},{e:[28,30]},{e:[1,3]},{e:[22,24]}],
+      10:[{e:[13,15]},{e:[10,12]},{e:[16,18]},{e:[1,3]},{e:[25,27]},{e:[22,24]},{e:[4,6]},{e:[19,21]}],
+    }
+  },
+  // --- HÉRÉDIA 11 paires, 3 donnes/tour, 8 jouées + 1 relais ---
+  'heredia_11_3': {
+    type:'heredia', nbPaires:11, dpt:3, nbTours:9,
+    paires:{
+      1: [{e:[7,9]},{e:[22,24]},{e:[16,18]},{e:[25,27]},{e:[10,12]},{e:[19,21]},{e:[28,30]},{e:[4,6]},{relais:true}],
+      2: [{e:[22,24]},{e:[16,18]},{e:[10,12]},{e:[28,30]},{e:[25,27]},{e:[7,9]},{e:[13,15]},{e:[1,3]},{relais:true}],
+      3: [{e:[4,6]},{e:[28,30]},{e:[1,3]},{e:[25,27]},{e:[19,21]},{e:[22,24]},{e:[16,18]},{relais:true},{e:[10,12]}],
+      4: [{e:[22,24]},{e:[1,3]},{e:[25,27]},{e:[13,15]},{e:[7,9]},{e:[19,21]},{relais:true},{e:[16,18]},{e:[4,6]}],
+      5: [{e:[19,21]},{e:[28,30]},{e:[22,24]},{e:[7,9]},{e:[25,27]},{relais:true},{e:[10,12]},{e:[4,6]},{e:[1,3]}],
+      6: [{e:[4,6]},{e:[22,24]},{e:[25,27]},{e:[10,12]},{relais:true},{e:[1,3]},{e:[13,15]},{e:[19,21]},{e:[7,9]}],
+      7: [{e:[7,9]},{e:[16,18]},{e:[1,3]},{relais:true},{e:[28,30]},{e:[25,27]},{e:[10,12]},{e:[13,15]},{e:[4,6]}],
+      8: [{e:[13,15]},{e:[4,6]},{relais:true},{e:[10,12]},{e:[19,21]},{e:[7,9]},{e:[28,30]},{e:[16,18]},{e:[1,3]}],
+      9: [{e:[19,21]},{relais:true},{e:[16,18]},{e:[28,30]},{e:[7,9]},{e:[1,3]},{e:[4,6]},{e:[13,15]},{e:[10,12]}],
+      10:[{relais:true},{e:[4,6]},{e:[22,24]},{e:[13,15]},{e:[10,12]},{e:[25,27]},{e:[16,18]},{e:[1,3]},{e:[7,9]}],
+      11:[{e:[13,15]},{e:[1,3]},{e:[10,12]},{e:[7,9]},{e:[28,30]},{e:[22,24]},{e:[4,6]},{e:[19,21]},{relais:true}],
+    }
+  },
+  // --- HÉRÉDIA 12 paires, 3 donnes/tour, 8 tours ---
+  'heredia_12_3': {
+    type:'heredia', nbPaires:12, dpt:3, nbTours:8,
+    paires:{
+      1: [{e:[16,18]},{e:[7,9]},{e:[10,12]},{e:[13,15]},{e:[28,30]},{e:[22,24]},{e:[19,21]},{e:[4,6]}],
+      2: [{e:[22,24]},{e:[13,15]},{e:[25,27]},{e:[10,12]},{e:[1,3]},{e:[7,9]},{e:[16,18]},{e:[19,21]}],
+      3: [{e:[4,6]},{e:[16,18]},{e:[19,21]},{e:[1,3]},{e:[10,12]},{e:[22,24]},{e:[25,27]},{e:[13,15]}],
+      4: [{e:[13,15]},{e:[1,3]},{e:[25,27]},{e:[19,21]},{e:[4,6]},{e:[28,30]},{e:[7,9]},{e:[22,24]}],
+      5: [{e:[25,27]},{e:[22,24]},{e:[19,21]},{e:[7,9]},{e:[28,30]},{e:[4,6]},{e:[16,18]},{e:[10,12]}],
+      6: [{e:[22,24]},{e:[28,30]},{e:[13,15]},{e:[19,21]},{e:[7,9]},{e:[10,12]},{e:[1,3]},{e:[4,6]}],
+      7: [{e:[4,6]},{e:[1,3]},{e:[16,18]},{e:[13,15]},{e:[25,27]},{e:[7,9]},{e:[22,24]},{e:[10,12]}],
+      8: [{e:[13,15]},{e:[7,9]},{e:[4,6]},{e:[28,30]},{e:[1,3]},{e:[10,12]},{e:[25,27]},{e:[16,18]}],
+      9: [{e:[1,3]},{e:[22,24]},{e:[16,18]},{e:[10,12]},{e:[7,9]},{e:[28,30]},{e:[19,21]},{e:[13,15]}],
+      10:[{e:[16,18]},{e:[13,15]},{e:[4,6]},{e:[7,9]},{e:[10,12]},{e:[19,21]},{e:[1,3]},{e:[22,24]}],
+      11:[{e:[1,3]},{e:[16,18]},{e:[13,15]},{e:[28,30]},{e:[25,27]},{e:[4,6]},{e:[7,9]},{e:[19,21]}],
+      12:[{e:[25,27]},{e:[28,30]},{e:[10,12]},{e:[1,3]},{e:[4,6]},{e:[19,21]},{e:[22,24]},{e:[16,18]}],
+    }
+  },
+};
+
+// Mapping nbPaires -> clé réelle dans HOWELL_MOVES
+const HOWELL_KEY_MAP = {
+  'classique_6_5':  'classique_6_5',
+  'classique_8_4':  'classique_8_4',
+  'classique_10_3': 'classique_10_3',
+  'classique_12_3': 'classique_12_3',
+  'heredia_7_4':  'heredia_7_4',
+  'heredia_8_4':  'heredia_8_4',
+  'heredia_9_3':  'heredia_9_3',
+  'heredia_10_3': 'heredia_10_3',
+  'heredia_11_3': 'heredia_11_3',
+  'heredia_12_3': 'heredia_12_3',
+};
+
+function howellDonnes(key, paire, tour) {
+  const realKey = HOWELL_KEY_MAP[key] || key;
+  const mv = HOWELL_MOVES[realKey];
+  if(!mv) return null;
+  if(mv.type==='classique') {
+    // chercher dans les tables
+    for(const table of mv.tables) {
+      const t = table[tour];
+      if(!t) continue;
+      const [ns,eo,e] = t;
+      if(ns===paire||eo===paire) return Array.from({length:e[1]-e[0]+1},(_,i)=>e[0]+i);
+    }
+    return null;
+  } else {
+    // heredia
+    const pos = mv.paires[paire]?.[tour];
+    if(!pos||pos.relais) return null;
+    return Array.from({length:pos.e[1]-pos.e[0]+1},(_,i)=>pos.e[0]+i);
+  }
+}
+
+// Clé Howell pour la config actuelle
+function howellKey(mouvement, nbPaires, dpt) {
+  return mouvement+'_'+nbPaires+'_'+dpt;
+}
+
+function buildSim(T,N,R,mode,sens){
+  const withSaut=(mode==='saut')||(mode==='mitchell'&&N%2===0);
+  const isGuerid=mode==='guerid';
+  const sautApres=withSaut?N/2-1:-1;
+  let blocs=Array.from({length:N},(_,i)=>i);
+  let eoPos=T-1,eoTable=T;
+  const tours=[];
+  for(let t=0;t<R;t++){
+    let tableAffichee,blocIdx,estSaut=false;
+    if(isGuerid){
+      const tRef=sens==='NS'?T:eoTable;
+      const slot=tToSlot(tRef,N);
+      blocIdx=blocs[slot];
+      tableAffichee=(tRef===1||tRef===N)?'1 & '+N:String(tRef);
+    }else{
+      if(sens==='NS'){blocIdx=blocs[T-1];tableAffichee=String(T);}
+      else{blocIdx=blocs[eoPos];tableAffichee=String(eoPos+1);estSaut=withSaut&&t===sautApres+1;}
+    }
+    tours.push({blocIdx,tableAffichee,estSaut});
+    const nd=Array(N);
+    if(isGuerid){for(let i=0;i<N;i++)nd[i]=blocs[(i+1)%N];}
+    else{nd[N-1]=blocs[0];for(let i=0;i<N-1;i++)nd[i]=blocs[i+1];}
+    blocs=nd;
+    if(isGuerid)eoTable=(eoTable%N)+1;
+    else{const pas=withSaut&&t===sautApres?2:1;eoPos=(eoPos+pas)%N;}
+  }
+  return tours;
+}
+
+function getGrouped(p, dbSource){
+  const rows=dbSource.filter(r=>r[0]===p);
+  const groups={};
+  rows.forEach(row=>{
+    const isHowell=dbSource===DB_HOWELL;
+    const [,t,m,r,d,dc,def]=isHowell?row:[...row.slice(0,5),row[1]*row[4],row[6]];
+    const key=m+'_'+d; // grouper par mouvement ET dpt
+    if(!groups[key]) groups[key]={mouvement:m,tables:t,options:[],deficient:true};
+    groups[key].options.push({tours:r,dpt:d,donnesCirc:dc,deficient:def});
+    if(!def) groups[key].deficient=false;
+  });
+  return Object.values(groups);
+}
+
+function tToSlot(t,N){if(t===1||t===N)return 0;if(t<=N/2)return t-1;return t;}
+
+function applyStyle(el,s){Object.assign(el.style,s);}
+var cfg=null, sim=[], tourIdx=0, results={};
+var mouv='', sens='NS', relaisLigne='EO';
+var SUITS=[['T','♣'],['K','♦'],['C','♥'],['P','♠'],['SA','SA']];
+var SUIT_SYM={T:'♣',K:'♦',C:'♥',P:'♠',SA:'SA'};
+var RES_VALS=['-7','-6','-5','-4','-3','-2','-1','=','+1','+2','+3','+4','+5','+6'];
+var ITEM_H=40;
+
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+
+function onPairesInput(){
+  var nbP=parseInt(document.getElementById('f-paires').value)||0;
+  var list=document.getElementById('mouv-list');
+  var err=document.getElementById('e-paires');
+  list.innerHTML='';
+  if(nbP<6||nbP>36){err.style.display='block';return;}
+  err.style.display='none';
+  var mg=getGrouped(nbP,DB);
+  var hg=getGrouped(nbP,DB_HOWELL);
+  if(!mg.length&&!hg.length){list.innerHTML='<p class="no-options">Aucun mouvement disponible</p>';return;}
+  if(mg.length){
+    var sep=document.createElement('p');sep.className='section-sep';sep.textContent='Mitchell';list.appendChild(sep);
+    mg.forEach(function(g){list.appendChild(makeMouvBtn(g,nbP));});
+  }
+  if(hg.length){
+    var sep2=document.createElement('p');sep2.className='section-sep';sep2.textContent='Howell';list.appendChild(sep2);
+    hg.forEach(function(g){list.appendChild(makeMouvBtn(g,nbP));});
+  }
+}
+
+function makeMouvBtn(g,nbP){
+  var btn=document.createElement('button');
+  btn.className='option-btn';
+  var dc=g.options[0].donnesCirc;
+  var defVis=g.deficient?'visibility:visible':'visibility:hidden';
+  var toursLabel=g.options.length===1?g.options[0].tours+'x'+g.options[0].dpt:g.options.map(function(o){return o.tours+'x'+o.dpt;}).join(' ou ');
+  btn.innerHTML='<div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span class="option-main">'+
+    (MOUV_LABEL[g.mouvement]||g.mouvement)+'</span><span style="font-size:11px;color:#f87171;font-weight:600;'+defVis+'">déficient</span></div>'+
+    '<div class="option-detail">'+g.tables+' tables · '+toursLabel+' donnes · '+dc+' en circulation</div></div>'+
+    '<span class="option-badge '+(MOUV_BADGE[g.mouvement]||'badge-simple')+'">'+( MOUV_SHORT[g.mouvement]||'')+'</span>';
+  btn.onclick=function(){selectMouv(g,nbP);};
+  return btn;
+}
+
+function selectMouv(g,nbP){
+  var opt=g.options[0];
+  mouv=g.mouvement;
+  var isH=['classique','heredia'].includes(mouv);
+  var N=Math.floor(nbP/2);
+  document.getElementById('pos-title').textContent=MOUV_LABEL[mouv]||mouv;
+  var sub=document.getElementById('pos-sub');
+  sub.textContent=g.tables+' tables · '+opt.tours+' tours de '+opt.dpt+' donnes';
+  sub.dataset.dpt=opt.dpt;sub.dataset.tours=opt.tours;sub.dataset.nbP=nbP;
+  document.getElementById('pos-mitchell').style.display=isH?'none':'';
+  document.getElementById('pos-howell').style.display=isH?'':'none';
+  if(!isH){
+    document.getElementById('f-table').max=N;
+    document.getElementById('field-relais').style.display=(nbP%2!==0)?'':'none';
+    setSens('NS');setRL('EO');
+  } else {
+    document.getElementById('f-paire').max=nbP;
+  }
+  goScreen('s-position');
+}
+
+function setSens(s){
+  sens=s;
+  applyStyle(document.getElementById('btn-ns'),s==='NS'?GREEN:OFF);
+  applyStyle(document.getElementById('btn-eo'),s==='EO'?BLUE:OFF);
+}
+function setRL(r){
+  relaisLigne=r;
+  applyStyle(document.getElementById('btn-rns'),r==='NS'?GREEN:OFF);
+  applyStyle(document.getElementById('btn-reo'),r==='EO'?BLUE:OFF);
+}
+
+function startFeuille(){
+  var sub=document.getElementById('pos-sub');
+  var D=parseInt(sub.dataset.dpt)||0;
+  var R=parseInt(sub.dataset.tours)||0;
+  var nbP=parseInt(sub.dataset.nbP)||0;
+  var N=Math.floor(nbP/2);
+  var isH=['classique','heredia'].includes(mouv);
+  if(isH){
+    var P=parseInt(document.getElementById('f-paire').value)||0;
+    if(P<1||P>nbP){document.getElementById('e-paire').style.display='block';return;}
+    document.getElementById('e-paire').style.display='none';
+    cfg={isH:true,N:N,R:R,D:D,nbP:nbP,P:P,htype:mouv};
+  } else {
+    var T=parseInt(document.getElementById('f-table').value)||0;
+    if(T<1||T>N){document.getElementById('e-table').style.display='block';return;}
+    document.getElementById('e-table').style.display='none';
+    var simMode=mouv==='saut'?'saut':mouv==='guerid'?'guerid':'mitchell';
+    sim=buildSim(T,N,R,simMode,sens);
+    cfg={isH:false,T:T,N:N,R:R,D:D,sens:sens,relaisLigne:relaisLigne,impair:nbP%2!==0};
+  }
+  tourIdx=0;results={};
+  goScreen('s-jeu');
+  renderTour();
+}
+
+function getDonnes(t){
+  if(!cfg)return[];
+  if(cfg.isH){
+    var key=cfg.htype+'_'+cfg.nbP+'_'+cfg.D;
+    return howellDonnes(key,cfg.P,t)||null;
+  }
+  var etat=sim[t];if(!etat)return[];
+  var estRelais=!!(cfg.impair&&cfg.sens===cfg.relaisLigne&&etat.tableAffichee===String(cfg.N));
+  if(estRelais)return null;
+  return Array.from({length:cfg.D},function(_,i){return etat.blocIdx*cfg.D+1+i;});
+}
+
+function renderTour(){
+  var t=tourIdx;
+  document.getElementById('t-num').textContent=t+1;
+  document.getElementById('t-total').textContent=cfg.R;
+  document.getElementById('btn-prev').disabled=t===0;
+  document.getElementById('btn-next').disabled=t===cfg.R-1;
+  var info='';
+  if(!cfg.isH){var e=sim[t];info='<span>Table '+e.tableAffichee+'</span><span>'+(cfg.sens==='NS'?'Nord/Sud':'Est/Ouest')+'</span>'+(e.estSaut?'<span style="color:#fbbf24">↪ Saut</span>':'');}
+  else{info='<span>Paire '+cfg.P+'</span><span>'+(cfg.htype==='classique'?'Classique':'Hérédia')+'</span>';}
+  document.getElementById('t-info').innerHTML=info;
+  var donnes=getDonnes(t);
+  var container=document.getElementById('t-donnes');
+  if(donnes===null){container.innerHTML='<div class="relais-card">⏸ Relais — pas de jeu ce tour</div>';return;}
+  var isMobile=window.innerWidth<=600;
+  container.innerHTML=donnes.map(function(d){
+    var r=results[d]||{res:'='};
+    var sc=r.score;
+    var sh=sc!==undefined?'<span class="donne-score'+(sc<0?' neg':'')+'">'+( sc>0?'+':'')+sc+'</span>':'';
+    var suitBtns=SUITS.map(function(pair){var c=pair[0],sym=pair[1];var sel=(r.col||'')===c;return '<button class="suit-btn'+(sel?' active':'')+' data-d="'+d+'" data-col="'+c+'" onclick="setColBtn(this)">'+sym+'</button>';}).join('');
+    var resBtns=RES_VALS.map(function(x){var sel=(r.res||'=')===x;return '<button class="res-btn'+(sel?' active':'')+' data-d="'+d+'" data-res="'+x+'" onclick="setResBtn(this)">'+x+'</button>';}).join('');
+    var desktopHtml='<div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:6px;">'+
+      '<div><div class="inp-lbl">Niveau</div>'+
+      '<input type="number" min="1" max="7" value="'+(r.lv||'')+'" placeholder="1-7"'+
+      ' oninput="setLv('+d+',this.value)" onfocus="this.select()"'+
+      ' style="width:60px;padding:8px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:18px;font-weight:800;text-align:center;outline:none;-webkit-user-select:text;user-select:text;"/></div>'+
+      '<div style="flex:1"><div class="inp-lbl">Couleur</div><div class="suit-row">'+suitBtns+'</div></div></div>'+
+      '<div><div class="inp-lbl">Résultat</div><div class="res-grid" style="margin-top:3px;">'+resBtns+'</div></div>';
+    var mobileHtml='<div class="picker-row">'+
+      '<div style="flex:.8"><div class="inp-lbl" style="text-align:center;margin-bottom:3px;">Niveau</div><div class="picker" id="pk-lv-'+d+'"></div></div>'+
+      '<div style="flex:1.4"><div class="inp-lbl" style="text-align:center;margin-bottom:3px;">Couleur</div><div class="picker" id="pk-col-'+d+'"></div></div>'+
+      '<div style="flex:1.2"><div class="inp-lbl" style="text-align:center;margin-bottom:3px;">Résultat</div><div class="picker" id="pk-res-'+d+'"></div></div></div>';
+    return '<div class="donne-card" id="c'+d+'">'+
+      '<div class="donne-hdr"><div class="donne-num">'+d+'</div><div style="font-size:13px;font-weight:600">Donne '+d+'</div>'+sh+'</div>'+
+      '<div class="donne-body">'+
+      '<div>'+(isMobile?mobileHtml:desktopHtml)+'</div>'+
+      '<div class="row3" style="margin-top:6px;">'+
+        '<div><div class="inp-lbl">Déclarant</div><div class="btns4">'+
+          ['N','S','E','O'].map(function(x){return '<button id="d'+d+x+'" data-d="'+d+'" data-val="'+x+'" onclick="setDecBtn(this)" class="'+((r.dec||'')===x?'active':'')+'">'+x+'</button>';}).join('')+
+        '</div></div>'+
+        '<div><div class="inp-lbl">Contre</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">'+
+          [['x','X'],['xx','XX']].map(function(pair){var v=pair[0],l=pair[1];var sel=(r.dbl||'')===v;return '<button data-d="'+d+'" data-dbl="'+v+'" onclick="togDblBtn(this)" style="padding:7px 0;border-radius:7px;border:1.5px solid '+(sel?'var(--blue)':'var(--border)')+';background:'+(sel?'rgba(96,165,250,.15)':'var(--bg3)')+';color:'+(sel?'var(--blue)':'var(--text2)')+';font-size:12px;font-weight:700;cursor:pointer;">'+l+'</button>';}).join('')+
+        '</div></div>'+
+        '<div><div class="inp-lbl">Score</div><div style="font-size:20px;font-weight:800;color:'+(sc!==undefined?(sc<0?'#f87171':'var(--green)'):'var(--text2)')+';">'+(sc!==undefined?(sc>0?'+':'')+sc:'—')+'</div></div>'+
+      '</div>'+
+      '</div></div>';
+  }).join('');
+  if(isMobile){
+    donnes.forEach(function(d){
+      var r=results[d]||{res:'='};
+      initPicker(d,'lv',['1','2','3','4','5','6','7'],r.lv?String(r.lv):'4');
+      initPicker(d,'col',['T','K','C','P','SA'],r.col||'P');
+      initPicker(d,'res',RES_VALS,r.res||'=');
+    });
+  }
+}
+
+function navTour(d){tourIdx+=d;renderTour();window.scrollTo(0,0);}
+
+function setLv(d,v){
+  if(!results[d])results[d]={res:'='};
+  var lv=parseInt(v);
+  results[d].lv=(lv>=1&&lv<=7)?lv:'';
+  results[d].contrat=results[d].lv&&results[d].col?results[d].lv+results[d].col:'';
+  calc(d);upd(d);
+}
+function setColBtn(btn){setCol(parseInt(btn.dataset.d),btn.dataset.col);}
+function setResBtn(btn){setRes(parseInt(btn.dataset.d),btn.dataset.res);}
+function setDecBtn(btn){sF(parseInt(btn.dataset.d),'dec',btn.dataset.val);}
+function togDblBtn(btn){togDbl(parseInt(btn.dataset.d),btn.dataset.dbl);}
+function setCol(d,c){
+  if(!results[d])results[d]={res:'='};
+  results[d].col=c;
+  results[d].contrat=results[d].lv&&c?results[d].lv+c:'';
+  SUITS.forEach(function(pair){
+    SUITS.forEach(function(pair){var b=document.querySelector('.suit-btn[data-col="'+pair[0]+'"][data-d="'+d+'"]');if(b)b.className='suit-btn'+(results[d].col===pair[0]?' active':'');});
+    if(b)b.className='suit-btn'+(results[d].col===pair[0]?' active':'');
+  });
+  calc(d);upd(d);
+}
+function setRes(d,x){
+  if(!results[d])results[d]={res:'='};
+  results[d].res=x;
+  RES_VALS.forEach(function(v){
+    RES_VALS.forEach(function(v){var b=document.querySelector('.res-btn[data-res="'+v+'"][data-d="'+d+'"]');if(b)b.className='res-btn'+(results[d].res===v?' active':'');});
+    if(b)b.className='res-btn'+(results[d].res===v?' active':'');
+  });
+  calc(d);upd(d);
+}
+function sF(d,f,v){
+  if(!results[d])results[d]={res:'='};
+  results[d][f]=v;
+  if(f==='dec'){['N','S','E','O'].forEach(function(x){var b=document.getElementById('d'+d+x);if(b)b.className=(x===v?'active':'');});}
+  calc(d);upd(d);
+}
+function togDbl(d,v){
+  if(!results[d])results[d]={res:'='};
+  results[d].dbl=results[d].dbl===v?'':v;
+  renderTour();
+}
+
+function isVul(b,dec){
+  var n=((b-1)%16)+1;
+  var ns=['N','S'].includes((dec||'').toUpperCase());
+  if([5,6,9,10,13,14].includes(n))return true;
+  if(ns&&[1,2].includes(n))return true;
+  if(!ns&&[3,4,7,8,11,12,15,16].includes(n))return true;
+  return false;
+}
+
+function calc(d){
+  var r=results[d];
+  if(!r||!r.contrat||!r.dec||!r.res){if(r)r.score=undefined;return;}
+  var m=r.contrat.match(/^([1-7])(SA|[PKTC])$/i);
+  if(!m){r.score=undefined;return;}
+  var lv=parseInt(m[1]),suit=m[2].toUpperCase();
+  var isSA=suit==='SA',isMaj=['P','C'].includes(suit);
+  var res=r.res==='='?0:parseInt(r.res);
+  if(isNaN(res)){r.score=undefined;return;}
+  var vul=isVul(d,r.dec),dbl=r.dbl||'';
+  if(res<0){
+    var n=-res;
+    r.score=!dbl?(vul?-100*n:-50*n):dbl==='x'?(vul?(n===1?-200:n===2?-500:-800-(n-3)*300):(n===1?-100:n===2?-300:-500-(n-3)*300)):(vul?(n===1?-400:n===2?-1000:-1600-(n-3)*600):(n===1?-200:n===2?-600:-1000-(n-3)*600));
+  } else {
+    var pts=!dbl?(isSA?40+(lv-1)*30+res*30:isMaj?lv*30+res*30:lv*20+res*20):dbl==='x'?(isSA?(40+(lv-1)*30)*2+res*100:isMaj?lv*60+res*100:lv*40+res*100):(isSA?(40+(lv-1)*30)*4+res*200:isMaj?lv*120+res*200:lv*80+res*200);
+    var base=isSA?40+(lv-1)*30:isMaj?lv*30:lv*20;
+    var bd=dbl==='x'?base*2:dbl==='xx'?base*4:base;
+    var prime=bd>=100?(vul?500:300):50;
+    if(dbl==='x')prime+=50;if(dbl==='xx')prime+=100;
+    var tot=lv+6+res;
+    if(tot===13)prime+=vul?1500:1000;else if(tot===12)prime+=vul?750:500;
+    r.score=pts+prime;
+  }
+}
+
+function upd(d){
+  var r=results[d];
+  var hdr=document.getElementById('c'+d);
+  if(!hdr)return;
+  var sh=hdr.querySelector('.donne-score');
+  var sc=r&&r.score;
+  if(sc!==undefined){
+    if(!sh){sh=document.createElement('span');hdr.querySelector('.donne-hdr').appendChild(sh);}
+    sh.textContent=(sc>0?'+':'')+sc;
+    sh.className='donne-score'+(sc<0?' neg':'');
+  } else if(sh) sh.remove();
+  // Update score display in body
+  var sdiv=hdr.querySelector('.donne-body .row3 div:last-child div');
+  if(sdiv){
+    sdiv.textContent=sc!==undefined?(sc>0?'+':'')+sc:'—';
+    sdiv.style.color=sc!==undefined?(sc<0?'#f87171':'var(--green)'):'var(--text2)';
+  }
+}
+
+function buildRecap(){
+  var all=[];
+  for(var t=0;t<cfg.R;t++){var d=getDonnes(t);if(d)all=all.concat(d);}
+  var total=all.reduce(function(s,d){return s+(results[d]&&results[d].score||0);},0);
+  var played=all.filter(function(d){return results[d]&&results[d].score!==undefined;}).length;
+  document.getElementById('recap-sub').textContent=played+' donne'+(played>1?'s':'')+' saisie'+(played>1?'s':'');
+  document.getElementById('recap-list').innerHTML=all.map(function(d){
+    var r=results[d];
+    var ct=r&&r.contrat?r.contrat+(r.dec?' par '+r.dec:'')+(r.dbl||'')+(r.res||''):'—';
+    var sc=r&&r.score;
+    return '<div class="recap-row"><div class="recap-num">'+d+'</div><div class="recap-contract">'+ct+'</div><div class="recap-score'+(sc!==undefined?(sc<0?' neg':' pos'):'')+'">'+(sc!==undefined?(sc>0?'+':'')+sc:'—')+'</div></div>';
+  }).join('');
+  var el=document.getElementById('recap-total');
+  el.textContent=(total>0?'+':'')+total;
+  el.style.color=total>0?'var(--green)':total<0?'#f87171':'var(--text)';
+}
+
+// ── Picker ─────────────────────────────────────────────────────
+var SUIT_LABEL={T:'♣ Trèfle',K:'♦ Carreau',C:'♥ Cœur',P:'♠ Pique',SA:'SA'};
+
+function initPicker(d,type,items,initVal){
+  var el=document.getElementById('pk-'+type+'-'+d);
+  if(!el)return;
+  el._d=d;el._type=type;el._items=items;
+  var idx=items.indexOf(initVal);if(idx<0)idx=0;
+  el._idx=idx;
+  var inner=document.createElement('div');
+  inner.className='picker-inner';
+  inner.id='pki-'+type+'-'+d;
+  var html='<div class="picker-item"></div>';
+  items.forEach(function(it){
+    var lbl=type==='col'?(SUIT_LABEL[it]||it):it;
+    html+='<div class="picker-item" data-val="'+it+'">'+lbl+'</div>';
+  });
+  html+='<div class="picker-item"></div>';
+  inner.innerHTML=html;
+  var sel=document.createElement('div');sel.className='picker-sel';
+  el.innerHTML='';el.appendChild(sel);el.appendChild(inner);
+  inner.style.transform='translateY('+((-idx)*ITEM_H)+'px)';
+  updatePickerSel(el);
+  addPickerEvents(el);
+}
+
+function updatePickerSel(el){
+  el.querySelectorAll('.picker-item[data-val]').forEach(function(it,i){
+    it.classList.toggle('sel',i===el._idx);
+  });
+}
+
+function pickerSetIdx(el,idx){
+  var items=el._items;
+  idx=Math.max(0,Math.min(items.length-1,idx));
+  el._idx=idx;
+  var inner=el.querySelector('.picker-inner');
+  inner.style.transition='transform 0.15s ease';
+  inner.style.transform='translateY('+((-idx)*ITEM_H)+'px)';
+  updatePickerSel(el);
+  onPickerChange(el._d,el._type,items[idx]);
+}
+
+function onPickerChange(d,type,val){
+  if(!results[d])results[d]={res:'='};
+  if(type==='lv')results[d].lv=parseInt(val);
+  else if(type==='col')results[d].col=val;
+  else if(type==='res')results[d].res=val;
+  if(type==='lv'||type==='col'){
+    results[d].contrat=(results[d].lv&&results[d].col)?results[d].lv+results[d].col:'';
+  }
+  calc(d);upd(d);
+}
+
+function addPickerEvents(el){
+  var startY=0,startIdx=0,isDragging=false;
+  function onStart(e){
+    isDragging=true;
+    startY=e.touches?e.touches[0].clientY:e.clientY;
+    startIdx=el._idx;
+    el.querySelector('.picker-inner').style.transition='none';
+    e.preventDefault();
+  }
+  function onMove(e){
+    if(!isDragging)return;
+    var y=e.touches?e.touches[0].clientY:e.clientY;
+    var delta=startY-y;
+    var newIdx=Math.max(0,Math.min(el._items.length-1,Math.round(startIdx+delta/ITEM_H)));
+    var inner=el.querySelector('.picker-inner');
+    inner.style.transform='translateY('+((-newIdx)*ITEM_H)+'px)';
+    if(newIdx!==el._idx){el._idx=newIdx;updatePickerSel(el);onPickerChange(el._d,el._type,el._items[newIdx]);}
+    e.preventDefault();
+  }
+  function onEnd(){isDragging=false;pickerSetIdx(el,el._idx);}
+  el.addEventListener('touchstart',onStart,{passive:false});
+  el.addEventListener('touchmove',onMove,{passive:false});
+  el.addEventListener('touchend',onEnd);
+  el.addEventListener('mousedown',onStart);
+  window.addEventListener('mousemove',function(e){if(isDragging)onMove(e);});
+  window.addEventListener('mouseup',onEnd);
+  el.addEventListener('wheel',function(e){e.preventDefault();pickerSetIdx(el,el._idx+(e.deltaY>0?1:-1));},{passive:false});
+}
+
+setSens('NS');setRL('EO');
+</script>
+</body>
+</html>
