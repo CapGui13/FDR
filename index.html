@@ -625,7 +625,7 @@ function renderTour(){
   if(isMobile){
     donnes.forEach(function(d){
       var r=results[d]||{res:'='};
-      initPicker(d,'lv',['1','2','3','4','5','6','7'],r.lv?String(r.lv):'4');
+      initPicker(d,'lv',['-','1','2','3','4','5','6','7'],r.lv?String(r.lv):'-');
       initPicker(d,'col',['T','K','C','P','SA'],r.col||'P');
       initPicker(d,'res',RES_VALS,r.res||'=');
     });
@@ -802,7 +802,7 @@ function pickerSnap(el,idx){
 
 function onPickerChange(d,type,val){
   if(!results[d])results[d]={res:'='};
-  if(type==='lv')results[d].lv=parseInt(val);
+  if(type==='lv'){var lv=parseInt(val);results[d].lv=(lv>=1&&lv<=7)?lv:'';}  
   else if(type==='col')results[d].col=val;
   else results[d].res=val;
   if(type==='lv'||type==='col')results[d].contrat=(results[d].lv&&results[d].col)?results[d].lv+results[d].col:'';
