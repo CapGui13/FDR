@@ -8,7 +8,7 @@
 <title>Feuille de route</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#111;--bg2:#1a1a1a;--bg3:#222;--text:#f5f5f5;--text2:#999;--border:#333;--blue:#60a5fa;--green:#4ade80;}
+:root{--bg:#111;--bg2:#1a1a1a;--bg3:#222;--text:#f5f5f5;--text2:#999;--border:#333;--blue:#60a5fa;--green:#4ade80;--suit-s:#6b9fd4;--suit-h:#d4706a;--suit-d:#c8924a;--suit-c:#6aaa78;}
 @media(prefers-color-scheme:light){:root{--bg:#f8f8f7;--bg2:#fff;--bg3:#efefed;--text:#111;--text2:#666;--border:#ddd;--blue:#1d4ed8;--green:#166534;}}
 body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;padding-bottom:env(safe-area-inset-bottom,20px);touch-action:manipulation;-webkit-user-select:none;user-select:none;}
 .wrap{max-width:480px;margin:0 auto;padding:1.5rem 1rem;}
@@ -451,9 +451,9 @@ function tToSlot(t,N){if(t===1||t===N)return 0;if(t<=N/2)return t-1;return t;}
 
 var cfg=null, sim=[], tourIdx=0, results={};
 var mouv='', sens='NS', relaisLigne='EO';
-var SUITS=[['T','♣'],['K','♦'],['C','♥'],['P','♠'],['SA','SA']];
+var SUITS=[['T','♣','var(--suit-c)'],['K','♦','var(--suit-d)'],['C','♥','var(--suit-h)'],['P','♠','var(--suit-s)'],['SA','SA','var(--text)']];
 var RES_VALS=['-7','-6','-5','-4','-3','-2','-1','=','+1','+2','+3','+4','+5','+6'];
-var SUIT_LABEL={T:'Tr.',K:'Car.',C:'Co.',P:'Pi.',SA:'SA'};
+var SUIT_LABEL={T:'<span style="color:var(--suit-c)">♣</span>',K:'<span style="color:var(--suit-d)">♦</span>',C:'<span style="color:var(--suit-h)">♥</span>',P:'<span style="color:var(--suit-s)">♠</span>',SA:'SA'};
 var ITEM_H=40;
 
 function applyStyle(el,s){Object.assign(el.style,s);}
@@ -773,7 +773,7 @@ function initPicker(d,type,items,initVal){
   var html='<div class="picker-item"></div>';
   items.forEach(function(it){
     var lbl=type==='col'?(SUIT_LABEL[it]||it):it;
-    html+='<div class="picker-item" data-val="'+it+'">'+lbl+'</div>';
+    html+='<div class="picker-item" data-val="'+it+'" style="font-size:18px">'+lbl+'</div>';
   });
   html+='<div class="picker-item"></div>';
   inner.innerHTML=html;
