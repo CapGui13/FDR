@@ -561,30 +561,40 @@ function setDrumIdx(el, idx, animate) {
 
 function addDrumEvents(el) {
   var startY=0, startIdx=0, lastY=0, lastT=0, vel=0, dragging=false;
+  var inner = el.querySelector('.drum-inner');
   function getY(e){ return e.touches ? e.touches[0].clientY : e.clientY; }
+
   function start(e) {
-    dragging=true; startY=getY(e); lastY=startY; lastT=Date.now(); startIdx=el._idx; vel=0;
+    dragging=true;
+    startY=getY(e); lastY=startY; lastT=Date.now(); startIdx=el._idx; vel=0;
+    inner.style.transition='none';
     e.preventDefault();
   }
+
   function move(e) {
     if(!dragging) return;
     var y=getY(e), now=Date.now(), dt=Math.max(1,now-lastT);
-    vel = (lastY-y)/dt;
-    lastY=y; lastT=now;
-    // Snap to nearest item as we drag — never sit between two
-    var moved = Math.round((startY-y)/ITEM_H);
-    var target = Math.max(0, Math.min(el._items.length-1, startIdx+moved));
-    if(target !== el._idx) setDrumIdx(el, target, false);
+    vel=(lastY-y)/dt; lastY=y; lastT=now;
+    // Move drum freely with finger — no snapping during drag
+    var offset = startY - y;
+    var pos = 75 - (startIdx * ITEM_H) - offset;
+    inner.style.transform = 'translateY(' + pos + 'px)';
     e.preventDefault();
   }
+
   function end() {
     if(!dragging) return;
     dragging=false;
-    // Flick: project velocity to next item(s)
-    var flick = Math.round(vel * 120 / ITEM_H);
-    var target = Math.max(0, Math.min(el._items.length-1, el._idx + flick));
+    // Compute where the drum currently is
+    var matrix = new WebKitCSSMatrix(inner.style.transform);
+    var currentY = matrix ? matrix.m42 : (75 - el._idx * ITEM_H);
+    var currentFloat = (75 - currentY) / ITEM_H;
+    // Add flick
+    var flick = vel * 150 / ITEM_H;
+    var target = Math.max(0, Math.min(el._items.length-1, Math.round(currentFloat + flick)));
     setDrumIdx(el, target, true);
   }
+
   el.addEventListener('touchstart',start,{passive:false});
   el.addEventListener('touchmove',move,{passive:false});
   el.addEventListener('touchend',end);
