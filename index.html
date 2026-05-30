@@ -575,23 +575,20 @@ function addDrumEvents(el) {
     if(!dragging) return;
     var y=getY(e), now=Date.now(), dt=Math.max(1,now-lastT);
     vel=(lastY-y)/dt; lastY=y; lastT=now;
-    // Move drum freely with finger — no snapping during drag
     var offset = startY - y;
-    var pos = 75 - (startIdx * ITEM_H) - offset;
-    inner.style.transform = 'translateY(' + pos + 'px)';
+    inner.style.transform = 'translateY(' + (75 - startIdx*ITEM_H - offset) + 'px)';
     e.preventDefault();
   }
 
   function end() {
     if(!dragging) return;
     dragging=false;
-    // Compute where the drum currently is
-    var matrix = new WebKitCSSMatrix(inner.style.transform);
-    var currentY = matrix ? matrix.m42 : (75 - el._idx * ITEM_H);
-    var currentFloat = (75 - currentY) / ITEM_H;
-    // Add flick
-    var flick = vel * 150 / ITEM_H;
-    var target = Math.max(0, Math.min(el._items.length-1, Math.round(currentFloat + flick)));
+    // Position actuelle = ce qu'on a bougé depuis le début
+    var totalOffset = startY - lastY;
+    var floatIdx = startIdx + totalOffset / ITEM_H;
+    // Flick
+    floatIdx += vel * 120 / ITEM_H;
+    var target = Math.max(0, Math.min(el._items.length-1, Math.round(floatIdx)));
     setDrumIdx(el, target, true);
   }
 
@@ -607,6 +604,7 @@ function addDrumEvents(el) {
     setDrumIdx(el,el._idx+(e.deltaY>0?1:-1),true);
   },{passive:false});
 }
+
 
 // ── Render tour ──────────────────────────────────────────────────────────
 function renderTour(){
